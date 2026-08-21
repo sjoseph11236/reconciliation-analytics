@@ -1,19 +1,10 @@
+from fastapi import FastAPI, HTTPException
+
+from repositories.application_repository import get_application_artifacts
 from src.application_service import (
     ApplicationAnalysisResult,
-    analyze_application
+    analyze_application,
 )
-from fastapi import FastAPI
-
-JD_PATH = (
-    "artifacts/job_descriptions/"
-    "Software Developer — Alta Fox Capital.html"
-)
-
-RESUME_PATH = (
-    "artifacts/resumes/"
-    "Sayeed J. Software Engineer Resume 1.24.pdf"
-)
-
 
 app = FastAPI(
     title="Reconciliation Analytics API",
@@ -25,11 +16,21 @@ def health():
     return {"status": "ok"}
 
 @app.get(
-    "/applications/alta-fox/analysis",
+    "/applications/{application_id}/analysis",
     response_model=ApplicationAnalysisResult
 )
-def get_alta_fox_analysis():
+def get_application_analysis(application_id: int):
+    
+    application = get_application_artifacts(application_id)
+
+    if application is None: 
+        raise HTTPException(
+            status_code=404,
+            detail="Application not found"
+        )
     return analyze_application(
-        jd_path=JD_PATH,
-        resume_path=RESUME_PATH
+        jd_path=application["jd_path"],
+        resume_path=application["resume_path"]
     )
+
+        
