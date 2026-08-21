@@ -18,3 +18,6 @@ pypdf==6.16.1
 # API
 fastapi==0.128.8
 uvicorn==0.39.0
+
+# MCP
+mcp[cli]==2.0.0

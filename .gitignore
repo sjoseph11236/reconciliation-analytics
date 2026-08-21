@@ -33,3 +33,9 @@ viewer.json
 
 # Dependency lock generated locally
 requirements-lock.txt
+
+# Python packaging
+*.egg-info/
+
+# uv lockfile not currently used for dependency management
+uv.lock
