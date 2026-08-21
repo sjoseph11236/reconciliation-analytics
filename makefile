@@ -16,3 +16,6 @@ dev:
 	
 start: 
 	@python3 -m uvicorn api.app:app --reload
+
+mcp-dev:
+	@mcp dev mcp_server/server.py

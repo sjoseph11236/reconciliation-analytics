@@ -13,6 +13,7 @@ include = [
     "api*",
     "llm*",
     "mcp_server*",
+    "queries*",
     "repositories*",
     "src*",
 ]

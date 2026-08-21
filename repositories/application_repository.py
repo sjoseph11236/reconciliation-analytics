@@ -1,18 +1,22 @@
-APPLICATION_ARTIFACTS = {
-    1: {
-        "company": "Alta Fox Capital",
-        "role": "Software Developer",
-        "jd_path": (
-            "artifacts/job_descriptions/"
-            "Software Developer — Alta Fox Capital.html"
-        ),
-        "resume_path": (
-            "artifacts/resumes/"
-            "Sayeed J. Software Engineer Resume 1.24.pdf"
-        ),
-    }
-}
+import sqlite3
 
+from queries.application_queries import GET_APPLICATION_ARTIFACTS
+
+DB_PATH = "db/reconciliation.db"
 
 def get_application_artifacts(application_id: int):
-    return APPLICATION_ARTIFACTS.get(application_id)
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
+    
+    try:
+        row = connection.execute(
+            GET_APPLICATION_ARTIFACTS,
+            (application_id,),
+        ).fetchone()
+        
+        if row is None:
+            return None
+        
+        return dict(row)
+    finally:
+        connection.close()

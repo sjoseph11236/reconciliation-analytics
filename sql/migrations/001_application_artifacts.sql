@@ -1,4 +1,11 @@
-CREATE TABLE IF NOT EXISTS resume_versions (
+BEGIN TRANSACTION;
+-- Remove legacy CSV/Excel-backed application records.
+-- email_events.application_id is NULL for all existing rows,
+-- so no current email-event relationships are lost.DROP TABLE applications;
+
+DROP TABLE applications;
+
+CREATE TABLE resume_versions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     name TEXT NOT NULL,
@@ -7,7 +14,8 @@ CREATE TABLE IF NOT EXISTS resume_versions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS job_descriptions (
+
+CREATE TABLE job_descriptions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     company TEXT NOT NULL,
@@ -17,7 +25,8 @@ CREATE TABLE IF NOT EXISTS job_descriptions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS applications (
+
+CREATE TABLE applications (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     user_id TEXT,
@@ -36,7 +45,6 @@ CREATE TABLE IF NOT EXISTS applications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-
     FOREIGN KEY (resume_version_id)
         REFERENCES resume_versions(id),
 
@@ -44,50 +52,8 @@ CREATE TABLE IF NOT EXISTS applications (
         REFERENCES job_descriptions(id)
 );
 
-CREATE TABLE IF NOT EXISTS email_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    gmail_id TEXT UNIQUE NOT NULL,
-    application_id INTEGER,  
 
-    original_from TEXT NOT NULL,
-    original_to TEXT NOT NULL,
-    original_subject TEXT NOT NULL,
-
-    original_date TIMESTAMP NOT NULL,
-    original_date_raw TEXT NOT NULL,
-    
-    body TEXT NOT NULL,
-
-    raw_annotation TEXT,
-    event_type TEXT,
-    signal_source TEXT,
-
-    FOREIGN KEY (application_id)
-        REFERENCES applications(id)
-);
-
-
-
--- reconciliation / ETL
-
-CREATE TABLE IF NOT EXISTS application_candidates (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email_event_id INTEGER NOT NULL UNIQUE,
-
-    company TEXT,
-    role TEXT,
-
-    company_source TEXT NOT NULL,
-    role_source TEXT NOT NULL,
-
-    confidence REAL NOT NULL,
-
-    FOREIGN KEY(email_event_id)
-        REFERENCES email_events(id)
-);
-
-
-CREATE TABLE IF NOT EXISTS application_reconciliation (
+CREATE TABLE application_reconciliation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     application_id INTEGER,
@@ -104,4 +70,7 @@ CREATE TABLE IF NOT EXISTS application_reconciliation (
     FOREIGN KEY (application_id)
         REFERENCES applications(id)
 );
+
+COMMIT;
+
 
