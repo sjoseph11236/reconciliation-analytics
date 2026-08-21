@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+gmail_token.json
+gmail_credentials.json
+
+# Local data
+*.db
+*.sqlite
+*.sqlite3
+
+# Raw/private source data
+JDs/
+emails/
+
+# Personal artifacts
+artifacts/resumes/
+
+# Logs / temporary analysis
+*.log
+notes.txt
+viewer.txt
+viewer.json
+
+# OS files
+.DS_Store
+
+# Dependency lock generated locally
+requirements-lock.txt

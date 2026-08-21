@@ -1,0 +1,16 @@
+# Google / Gmail
+google-auth==2.50.0
+google-auth-httplib2==0.3.1
+google-auth-oauthlib==1.3.1
+google-api-python-client==2.196.0
+
+# Environment
+python-dotenv==1.2.1
+
+# LLM
+openai==2.48.0
+pydantic==2.13.4
+
+# Artifact parsing
+beautifulsoup4==4.15.0
+pypdf==6.16.1
