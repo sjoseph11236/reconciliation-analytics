@@ -13,3 +13,6 @@ reset-db:
 
 dev:
 	@PYTHONPATH=. python3 src/poller.py
+	
+start: 
+	@python3 -m uvicorn api.app:app --reload
