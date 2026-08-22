@@ -1,6 +1,11 @@
 import sqlite3
 
-from queries.application_queries import GET_APPLICATION_ARTIFACTS
+from queries.application_queries import (
+    GET_APPLICATION_ARTIFACTS,
+    GET_APPLICATION_ANALYSIS,
+    INSERT_APPLICATION_ANALYSIS,
+) 
+
 
 DB_PATH = "db/reconciliation.db"
 
@@ -19,4 +24,44 @@ def get_application_artifacts(application_id: int):
         
         return dict(row)
     finally:
+        connection.close()
+        
+def get_application_analysis(application_id: int) -> dict|None:
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
+    
+    try:
+        row = connection.execute(
+            GET_APPLICATION_ANALYSIS,
+            (application_id,)
+        ).fetchone()
+        
+        if row is None: 
+            return None
+        
+        return dict(row)
+    finally:
+        connection.close()
+
+ 
+def save_application_analysis(
+    application_id: int,
+    application_analysis_result,
+):
+    connection = sqlite3.connect(DB_PATH)
+    
+    try:
+        connection.execute(
+            INSERT_APPLICATION_ANALYSIS,
+            (
+                application_id, 
+                application_analysis_result.score.required_score,
+                application_analysis_result.score.nice_to_have_score,
+                application_analysis_result.score.overall_score,
+                application_analysis_result.analysis.model_dump_json(),
+            )
+        )
+        
+        connection.commit()
+    finally: 
         connection.close()

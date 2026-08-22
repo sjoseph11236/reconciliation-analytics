@@ -1,9 +1,8 @@
 from fastapi import FastAPI, HTTPException
 
-from repositories.application_repository import get_application_artifacts
 from src.application_service import (
     ApplicationAnalysisResult,
-    analyze_application,
+    analyze_application_by_id,
 )
 
 app = FastAPI(
@@ -20,17 +19,12 @@ def health():
     response_model=ApplicationAnalysisResult
 )
 def get_application_analysis(application_id: int):
-    
-    application = get_application_artifacts(application_id)
-
-    if application is None: 
+    try:
+        return analyze_application_by_id(application_id)
+    except ValueError:
         raise HTTPException(
             status_code=404,
             detail="Application not found"
         )
-    return analyze_application(
-        jd_path=application["jd_path"],
-        resume_path=application["resume_path"]
-    )
 
         

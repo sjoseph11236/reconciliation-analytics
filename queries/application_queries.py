@@ -12,3 +12,28 @@ JOIN job_descriptions jd
     ON a.job_description_id = jd.id
 WHERE a.id = ?
 """
+
+GET_APPLICATION_ANALYSIS = """
+SELECT
+    application_id,
+    required_score,
+    nice_to_have_score,
+    overall_score,
+    analysis_json
+FROM application_analyses
+WHERE application_id = ?
+"""
+
+
+
+INSERT_APPLICATION_ANALYSIS = """
+INSERT INTO application_analyses (
+    application_id,
+    required_score,
+    nice_to_have_score,
+    overall_score,
+    analysis_json
+) 
+VALUES(?,?,?,?,?);
+"""
+

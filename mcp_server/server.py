@@ -1,9 +1,8 @@
 from mcp.server import MCPServer
 
-from repositories.application_repository import get_application_artifacts
 from src.application_service import (
     ApplicationAnalysisResult,
-    analyze_application
+    analyze_application_by_id
 )
 
 mcp = MCPServer("Reconciliation Analytics")
@@ -26,18 +25,8 @@ def analyze_job_application(
     application_id: int
 ) -> ApplicationAnalysisResult:
     """Analyze the resume-to-job match for a reconciled job application."""
-
-    application = get_application_artifacts(application_id)
-
-    if application is None:
-        raise ValueError(
-            f"Application {application_id} not found"
-        )
-
-    return analyze_application(
-        jd_path=application["jd_path"],
-        resume_path=application["resume_path"],
-    )
+    return analyze_application_by_id(application_id)
+ 
 
 if __name__ == "__main__":
     mcp.run()
